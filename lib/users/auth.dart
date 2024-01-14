@@ -11,6 +11,7 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen> {
   final _key = GlobalKey<FormState>();
+  bool _isLogin = false;
 
   void submitInfo() {
     _key.currentState!.validate();
@@ -49,22 +50,23 @@ class _AuthScreenState extends State<AuthScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      TextFormField(
-                        decoration: const InputDecoration(
-                          labelText: 'Enter Your Email',
+                      if (!_isLogin)
+                        TextFormField(
+                          decoration: const InputDecoration(
+                            labelText: 'Enter Your Email',
+                          ),
+                          keyboardType: TextInputType.emailAddress,
+                          autocorrect: false,
+                          textCapitalization: TextCapitalization.none,
+                          validator: (value) {
+                            if (value == null ||
+                                value.trim().isEmpty ||
+                                !value.contains('@')) {
+                              return 'Enter a valid email-id';
+                            }
+                            return null;
+                          },
                         ),
-                        keyboardType: TextInputType.emailAddress,
-                        autocorrect: false,
-                        textCapitalization: TextCapitalization.none,
-                        validator: (value) {
-                          if (value == null ||
-                              value.trim().isEmpty ||
-                              !value.contains('@')) {
-                            return 'Enter a valid email-id';
-                          }
-                          return null;
-                        },
-                      ),
                       const SizedBox(
                         height: 12,
                       ),
@@ -110,12 +112,23 @@ class _AuthScreenState extends State<AuthScreen> {
                       ),
                       ElevatedButton.icon(
                         onPressed: submitInfo,
-                        icon: const Icon(Icons.login),
-                        label: const Text('Login'),
+                        icon: _isLogin
+                            ? const Icon(Icons.login)
+                            : const Icon(Icons.person_add),
+                        label: _isLogin
+                            ? const Text('Login')
+                            : const Text('SignUp'),
                       ),
                       TextButton(
-                          onPressed: () {},
-                          child: const Text('Already an user?'))
+                        child: !_isLogin
+                            ? const Text('Already an user?')
+                            : const Text('New User? Register.'),
+                        onPressed: () {
+                          setState(() {
+                            _isLogin = !_isLogin;
+                          });
+                        },
+                      )
                     ],
                   )),
             ),

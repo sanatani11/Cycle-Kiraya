@@ -21,7 +21,7 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('karte ahi kuchh'),
+        title: _isLogin ? const Text('Login') : const Text('Signing Up'),
       ),
       body: Container(
         decoration: const BoxDecoration(

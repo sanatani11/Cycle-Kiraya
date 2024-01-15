@@ -1,5 +1,7 @@
 import 'package:cycle_kiraya/choose.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 var kColorScheme = ColorScheme.fromSeed(
   seedColor: const Color.fromARGB(255, 96, 59, 181),
@@ -8,12 +10,11 @@ var kDarkScheme = ColorScheme.fromSeed(
   seedColor: const Color.fromARGB(255, 5, 99, 125),
 );
 
-void main() {
-  // WidgetsFlutterBinding.ensureInitialized();
-
-  // SystemChrome.setPreferredOrientations([
-  //   DeviceOrientation.portraitUp
-  // ],).then((fn){
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(
     MaterialApp(
       darkTheme: ThemeData.dark().copyWith(

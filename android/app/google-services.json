@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "758489623121",
+    "project_id": "cycle-kiraya",
+    "storage_bucket": "cycle-kiraya.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:758489623121:android:bb05858ddac2349b79a670",
+        "android_client_info": {
+          "package_name": "com.example.cycle_kiraya"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEX3e0qLU-ved-16OXS09x_n1cqOpVHno"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

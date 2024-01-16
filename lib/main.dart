@@ -1,4 +1,7 @@
 import 'package:cycle_kiraya/choose.dart';
+import 'package:cycle_kiraya/users/dashboard.dart';
+import 'package:cycle_kiraya/widgets/splash.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -32,29 +35,43 @@ void main() async {
         )),
       ),
       theme: ThemeData().copyWith(
-          //useMaterial3: true,
-          colorScheme: kColorScheme,
-          appBarTheme: const AppBarTheme().copyWith(
-            backgroundColor: kColorScheme.onPrimaryContainer,
-            foregroundColor: kColorScheme.primaryContainer,
+        //useMaterial3: true,
+        colorScheme: kColorScheme,
+        appBarTheme: const AppBarTheme().copyWith(
+          backgroundColor: kColorScheme.onPrimaryContainer,
+          foregroundColor: kColorScheme.primaryContainer,
+        ),
+        cardTheme: const CardTheme().copyWith(
+          color: const Color.fromARGB(255, 170, 177, 232),
+          margin: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 8,
           ),
-          cardTheme: const CardTheme().copyWith(
-            color: const Color.fromARGB(255, 170, 177, 232),
-            margin: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 8,
-            ),
-          ),
-          elevatedButtonTheme: ElevatedButtonThemeData(
-              style: ElevatedButton.styleFrom(
-            backgroundColor: kColorScheme.primaryContainer,
-          )),
-          textTheme: ThemeData().textTheme.copyWith(
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+          backgroundColor: kColorScheme.primaryContainer,
+        )),
+        textTheme: ThemeData().textTheme.copyWith(
               titleLarge: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: kColorScheme.onSecondaryContainer,
-                  fontSize: 18))),
-      home: const Choose(),
+                  fontSize: 18),
+            ),
+      ),
+      debugShowCheckedModeBanner: false,
+      home: StreamBuilder(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const SplashScreen();
+          }
+          if (snapshot.hasData) {
+            return const DashboardScreen();
+          }
+          return const Choose();
+        },
+      ),
     ),
   );
   // });//

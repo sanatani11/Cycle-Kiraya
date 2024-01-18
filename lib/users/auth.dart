@@ -87,11 +87,15 @@ class _AuthScreenState extends State<AuthScreen> {
       ),
       body: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(colors: [
-            Color.fromARGB(255, 120, 150, 202),
-            Color.fromARGB(255, 80, 100, 149),
-            Color.fromARGB(255, 97, 109, 166),
-          ], begin: Alignment.topRight, end: Alignment.bottomRight),
+          gradient: LinearGradient(
+            colors: [
+              Color.fromARGB(255, 120, 150, 202),
+              Color.fromARGB(255, 80, 100, 149),
+              Color.fromARGB(255, 97, 109, 166),
+            ],
+            begin: Alignment.topRight,
+            end: Alignment.bottomRight,
+          ),
         ),
         child: Center(
           child: SingleChildScrollView(

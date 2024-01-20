@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:cycle_kiraya/data/locations.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -56,14 +57,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
               initialCameraPosition: CameraPosition(
                 target: LatLng(
                     currentLocation!.latitude!, currentLocation!.longitude!),
-                zoom: 20,
+                zoom: 15,
               ),
               markers: {
-                Marker(
-                  markerId: const MarkerId("currentLocation"),
-                  position: LatLng(
-                      currentLocation!.latitude!, currentLocation!.longitude!),
-                ),
+                for (final location in availableLocation)
+                  Marker(
+                    markerId: MarkerId(location.id),
+                    position: LatLng(location.lat, location.lng),
+                  ),
               },
             ),
     );

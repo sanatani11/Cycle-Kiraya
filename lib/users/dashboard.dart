@@ -54,6 +54,61 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         ],
       ),
+      drawer: Container(
+        decoration: const BoxDecoration(color: Colors.white),
+        width: 255.0,
+        child: Drawer(
+          child: ListView(
+            children: [
+              Container(
+                height: 165,
+                child: const DrawerHeader(
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Profile Name',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    SizedBox(
+                      height: 6,
+                    ),
+                    Text(
+                      'visit profile',
+                      style: TextStyle(color: Colors.grey),
+                    )
+                  ],
+                )),
+              ),
+              const DividerWidget(),
+              const SizedBox(
+                height: 12.0,
+              ),
+              const ListTile(
+                leading: Icon(Icons.history),
+                title: Text(
+                  'History',
+                  style: TextStyle(fontSize: 15),
+                ),
+              ),
+              const ListTile(
+                leading: Icon(Icons.person),
+                title: Text(
+                  'visit profile',
+                  style: TextStyle(fontSize: 15),
+                ),
+              ),
+              const ListTile(
+                leading: Icon(Icons.info),
+                title: Text(
+                  'About',
+                  style: TextStyle(fontSize: 15),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
       body: Stack(
         children: [
           currentLocation == null

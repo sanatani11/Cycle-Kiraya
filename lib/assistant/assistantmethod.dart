@@ -1,8 +1,12 @@
 import 'package:cycle_kiraya/assistant/request.dart';
+import 'package:cycle_kiraya/models/address.dart';
+import 'package:cycle_kiraya/providers/datahandling.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
 
 class AssistantMethod {
-  static Future<String> searchCoordinatesAddress(Position position) async {
+  static Future<String> searchCoordinatesAddress(
+      Position position, context) async {
     String locationAddress = "";
     String url =
         "https://api.geoapify.com/v1/geocode/reverse?lat=${position.latitude}&lon=${position.longitude}&apiKey=85a5177ec1d9420da018f1047af77673";
@@ -10,6 +14,15 @@ class AssistantMethod {
 
     if (response != "failed!") {
       locationAddress = response['features'][0]['properties']['formatted'];
+
+      Address userPickupAddress = Address(
+          placeFormattedAddress: locationAddress,
+          placeId: "place",
+          placeName: locationAddress,
+          lat: position.latitude,
+          lng: position.longitude);
+      Provider.of<DataHandling>(context, listen: false)
+          .updatePickupLocationAddress(userPickupAddress);
     }
     return locationAddress;
   }

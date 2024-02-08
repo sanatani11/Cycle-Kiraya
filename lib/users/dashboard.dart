@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:cycle_kiraya/assistant/assistantmethod.dart';
+import 'package:cycle_kiraya/providers/datahandling.dart';
+import 'package:cycle_kiraya/users/searchscreen.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:cycle_kiraya/widgets/divider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,9 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 //import 'package:location/location.dart';
 import 'package:cycle_kiraya/data/locations.dart';
+import 'package:provider/provider.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
+  static String idScreen = "dashboard";
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
@@ -17,6 +21,7 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   //LocationData? currentLocation;
+
   double bottomPadding = 0.0;
   Position? currentLocation;
   void getCurrentLocation() async {
@@ -35,9 +40,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     _googleMapController!
         .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
 
-    String address =
-        await AssistantMethod.searchCoordinatesAddress(currentLocation!);
-    print("This is my address:  " + address);
+    String address = await AssistantMethod.searchCoordinatesAddress(
+        currentLocation!, context);
+    //print("This is my address:  " + address);
   }
 
   // @override
@@ -191,34 +196,40 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     const SizedBox(
                       height: 10,
                     ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                        boxShadow: const [
-                          BoxShadow(
-                              color: Colors.grey,
-                              spreadRadius: 0.5,
-                              blurRadius: 10,
-                              offset: Offset(0.5, 0.5))
-                        ],
-                      ),
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.search,
-                              color: Colors.blueAccent,
-                            ),
-                            SizedBox(
-                              width: 12,
-                            ),
-                            Text(
-                              'Search Drop off',
-                              style: TextStyle(fontSize: 15),
-                            ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const SearchScreen()));
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: const [
+                            BoxShadow(
+                                color: Colors.grey,
+                                spreadRadius: 0.5,
+                                blurRadius: 10,
+                                offset: Offset(0.5, 0.5))
                           ],
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.search,
+                                color: Colors.blueAccent,
+                              ),
+                              SizedBox(
+                                width: 12,
+                              ),
+                              Text(
+                                'Search Drop off',
+                                style: TextStyle(fontSize: 15),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -238,7 +249,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Add Home',
+                              "Add Home",
                             ),
                             SizedBox(
                               height: 4.0,

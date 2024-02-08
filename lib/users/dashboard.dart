@@ -1,10 +1,11 @@
 import 'dart:async';
-
+import 'package:cycle_kiraya/assistant/assistantmethod.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:cycle_kiraya/widgets/divider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
+//import 'package:location/location.dart';
 import 'package:cycle_kiraya/data/locations.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -15,27 +16,41 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  LocationData? currentLocation;
-
+  //LocationData? currentLocation;
+  double bottomPadding = 0.0;
+  Position? currentLocation;
   void getCurrentLocation() async {
-    Location location = Location();
-    LocationData? locationData = await location.getLocation();
-    if (locationData != null) {
-      setState(() {
-        currentLocation = locationData;
-      });
-    } else {
-      print('kuchh nahi mila yaar');
-    }
+    //Location location = Location();
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best);
+    setState(() {
+      currentLocation = position;
+    });
+    print(position);
+
+    //LocationData? locationData = await location.getLocation();
+    LatLng latLngPosition = LatLng(position.latitude, position.longitude);
+    CameraPosition cameraPosition =
+        CameraPosition(target: latLngPosition, zoom: 14);
+    _googleMapController!
+        .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+
+    String address =
+        await AssistantMethod.searchCoordinatesAddress(currentLocation!);
+    print("This is my address:  " + address);
   }
 
-  @override
-  void initState() {
-    getCurrentLocation();
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   getCurrentLocation();
+  //   super.initState();
+  // }
 
   Completer<GoogleMapController> _controller = Completer<GoogleMapController>();
+  GoogleMapController? _googleMapController;
+
+  static const _initalCameraPostion =
+      CameraPosition(target: LatLng(36.25, -120.23), zoom: 14);
 
   @override
   Widget build(BuildContext context) {
@@ -111,27 +126,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
       body: Stack(
         children: [
-          currentLocation == null
-              ? const Center(
-                  child: Text('Loading.'),
-                )
-              : GoogleMap(
-                  initialCameraPosition: CameraPosition(
-                    target: LatLng(currentLocation!.latitude!,
-                        currentLocation!.longitude!),
-                    zoom: 15,
-                  ),
-                  markers: {
-                    for (final location in availableLocation)
-                      Marker(
-                        markerId: MarkerId(location.id),
-                        position: LatLng(location.lat, location.lng),
-                      ),
-                  },
-                  onMapCreated: (controller) {
-                    _controller.complete(controller);
-                  },
+          GoogleMap(
+            padding: EdgeInsets.only(bottom: bottomPadding),
+            initialCameraPosition: _initalCameraPostion,
+            myLocationEnabled: true,
+            zoomControlsEnabled: true,
+            zoomGesturesEnabled: true,
+            markers: {
+              for (final location in availableLocation)
+                Marker(
+                  markerId: MarkerId(location.id),
+                  position: LatLng(location.lat, location.lng),
                 ),
+            },
+            onMapCreated: (controller) {
+              _controller.complete(controller);
+              _googleMapController = controller;
+              getCurrentLocation();
+              setState(() {
+                bottomPadding = 350;
+              });
+            },
+          ),
           Positioned(
             left: 0.0,
             right: 0.0,

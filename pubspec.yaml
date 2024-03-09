@@ -44,8 +44,9 @@ dependencies:
   location: ^5.0.3
   firebase_database: ^10.4.3
   geolocator: ^10.1.0
-  http: ^1.2.0
+  http: 0.13.6
   provider: ^6.1.1
+  flutter_mapbox_autocomplete: ^2.0.0
 
 dev_dependencies:
   flutter_test:

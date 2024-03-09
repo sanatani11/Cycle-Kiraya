@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'package:cycle_kiraya/assistant/assistantmethod.dart';
+import 'package:cycle_kiraya/models/address.dart';
+import 'package:cycle_kiraya/models/location.dart';
 import 'package:cycle_kiraya/providers/datahandling.dart';
+import 'package:cycle_kiraya/users/routing.dart';
 import 'package:cycle_kiraya/users/searchscreen.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:cycle_kiraya/widgets/divider.dart';
@@ -51,7 +54,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   //   super.initState();
   // }
 
-  Completer<GoogleMapController> _controller = Completer<GoogleMapController>();
+  final Completer<GoogleMapController> _controller =
+      Completer<GoogleMapController>();
   GoogleMapController? _googleMapController;
 
   static const _initalCameraPostion =
@@ -197,9 +201,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       height: 10,
                     ),
                     GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const SearchScreen()));
+                      onTap: () async {
+                        var res = await Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => const SearchScreen()));
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -236,26 +241,35 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     const SizedBox(
                       height: 24,
                     ),
-                    const Row(
+                    Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.home,
                           color: Colors.grey,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 5,
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              "Add Home",
-                            ),
-                            SizedBox(
+                            Provider.of<DataHandling>(context).pickupLocation !=
+                                    null
+                                ? Text(LocationUtils.findNearestShop(Location(
+                                        id: "pickup",
+                                        lat: Provider.of<DataHandling>(context)
+                                            .pickupLocation!
+                                            .lat,
+                                        lng: Provider.of<DataHandling>(context)
+                                            .pickupLocation!
+                                            .lng))
+                                    .id)
+                                : const Text("Add the picking address"),
+                            const SizedBox(
                               height: 4.0,
                             ),
-                            Text(
-                              "Address where you live.",
+                            const Text(
+                              "This will be the pickup shop",
                               style: TextStyle(
                                   color: Colors.black54, fontSize: 12.0),
                             ),
@@ -270,25 +284,35 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     const SizedBox(
                       height: 8.0,
                     ),
-                    const Row(
+                    Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.work,
                           color: Colors.grey,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 5,
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              'Add Work',
-                            ),
-                            SizedBox(
+                            Provider.of<DataHandling>(context)
+                                        .dropoffLocation !=
+                                    null
+                                ? Text(LocationUtils.findNearestShop(Location(
+                                        id: "pickup",
+                                        lat: Provider.of<DataHandling>(context)
+                                            .dropoffLocation!
+                                            .lat,
+                                        lng: Provider.of<DataHandling>(context)
+                                            .dropoffLocation!
+                                            .lng))
+                                    .id)
+                                : const Text("Add the picking address"),
+                            const SizedBox(
                               height: 4.0,
                             ),
-                            Text(
+                            const Text(
                               "Address where you work.",
                               style: TextStyle(
                                   color: Colors.black54, fontSize: 12.0),
@@ -296,7 +320,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ],
                         )
                       ],
-                    )
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    if (Provider.of<DataHandling>(context).dropoffLocation !=
+                            null &&
+                        Provider.of<DataHandling>(context).pickupLocation !=
+                            null)
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => RoutingScreen(addresses: [
+                                      Provider.of<DataHandling>(context)
+                                          .pickupLocation!,
+                                      Provider.of<DataHandling>(context)
+                                          .dropoffLocation!
+                                    ])));
+                          },
+                          child: const Text("Move"),
+                        ),
+                      ),
                   ],
                 ),
               ),

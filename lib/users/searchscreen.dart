@@ -1,6 +1,6 @@
 import 'package:cycle_kiraya/assistant/request.dart';
 import 'package:cycle_kiraya/models/address.dart';
-import 'package:cycle_kiraya/models/placePredications.dart';
+import 'package:cycle_kiraya/models/place_predications.dart';
 import 'package:cycle_kiraya/providers/datahandling.dart';
 import 'package:cycle_kiraya/widgets/divider.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +16,9 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  TextEditingController _pickupLocationTextController = TextEditingController();
-  TextEditingController _dropOffLocationTextController =
+  final TextEditingController _pickupLocationTextController =
+      TextEditingController();
+  final TextEditingController _dropOffLocationTextController =
       TextEditingController();
   List<PlacePredictions> placesPredictionList = [];
 
@@ -198,7 +199,7 @@ class PredictionTile extends StatelessWidget {
     void getPlaceAddress(String placeId) async {
       showDialog(
         context: context,
-        builder: (context) => Dialog(
+        builder: (context) => const Dialog(
           child: Text("wait, setting..."),
         ),
       );
@@ -217,6 +218,7 @@ class PredictionTile extends StatelessWidget {
           lng: res["features"][0]["properties"]["lon"]);
       Provider.of<DataHandling>(context, listen: false)
           .updateDropoffLocationAddress(address);
+      Navigator.pop(context, "address-returned");
     }
 
     return InkWell(

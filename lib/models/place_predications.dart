@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class PlacePredictions {
   late String secondaryText;
   late String mainText;

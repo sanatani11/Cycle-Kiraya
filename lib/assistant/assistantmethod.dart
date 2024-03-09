@@ -2,6 +2,7 @@ import 'package:cycle_kiraya/assistant/request.dart';
 import 'package:cycle_kiraya/models/address.dart';
 import 'package:cycle_kiraya/providers/datahandling.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 class AssistantMethod {
@@ -25,5 +26,15 @@ class AssistantMethod {
           .updatePickupLocationAddress(userPickupAddress);
     }
     return locationAddress;
+  }
+
+  void obtainPlaceDirectionDetails(
+      LatLng initialPosition, LatLng finalPosition) async {
+    var fromWaypoint = [initialPosition.latitude, initialPosition.longitude];
+    var toWaypoint = [finalPosition.latitude, finalPosition.longitude];
+    String getDirectionUrl =
+        "https://api.geoapify.com/v1/routing?waypoints=${fromWaypoint.join(',')}|${toWaypoint.join(',')}&mode=drive&details=instruction_details&apiKey=03298a44ba394f6784de323e34b18bb8";
+    var res = await RequestAssistant.getAddress(getDirectionUrl);
+    if (res == "failed") return;
   }
 }

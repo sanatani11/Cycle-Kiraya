@@ -1,4 +1,5 @@
 import 'package:cycle_kiraya/models/location.dart';
+import 'dart:math';
 
 const availableLocation = [
   Location(
@@ -57,3 +58,54 @@ const availableLocation = [
     lng: 86.44167151085495,
   ),
 ];
+
+class LocationUtils {
+  static Location findNearestShop(Location location) {
+    double minPickupDistance = double.infinity;
+    Location? result;
+
+    for (var shop in availableLocation) {
+      double pickupDistance = calculateDistance(location, shop);
+      if (pickupDistance < minPickupDistance) {
+        minPickupDistance = pickupDistance;
+        result = shop;
+      }
+    }
+
+    return result!;
+  }
+
+  static double calculateDistance(Location location1, Location location2) {
+    const double earthRadius = 6371; // in kilometers
+    double lat1 = degreesToRadians(location1.lat);
+    double lon1 = degreesToRadians(location1.lng);
+    double lat2 = degreesToRadians(location2.lat);
+    double lon2 = degreesToRadians(location2.lng);
+
+    double dLat = lat2 - lat1;
+    double dLon = lon2 - lon1;
+
+    double a =
+        pow(sin(dLat / 2), 2) + cos(lat1) * cos(lat2) * pow(sin(dLon / 2), 2);
+    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+    double distance = earthRadius * c;
+
+    return distance;
+  }
+
+  static double degreesToRadians(double degrees) {
+    return degrees * pi / 180;
+  }
+}
+
+void main() {
+  Location pickupLocation = const Location(id: 'pickup', lat: 23.0, lng: 86.5);
+  Location dropoffLocation =
+      const Location(id: 'dropoff', lat: 24.0, lng: 86.0);
+
+  Location nearestPickupShop = LocationUtils.findNearestShop(pickupLocation);
+  Location nearestDropoffShop = LocationUtils.findNearestShop(dropoffLocation);
+
+  print('Nearest shop to pickup location: ${nearestPickupShop.id}');
+  print('Nearest shop to dropoff location: ${nearestDropoffShop.id}');
+}
